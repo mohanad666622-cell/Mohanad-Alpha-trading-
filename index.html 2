@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="apple-mobile-web-app-title" content="MAT"/>
+<meta name="theme-color" content="#0d0d0d"/>
+<title>Mohanad Alpha Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0d0d; --bg2:#161616; --bg3:#1e1e1e; --bg4:#252525;
+  --border:#2e2e2e; --border2:#3a3a3a;
+  --white:#ffffff; --light:#e8e8e8; --mid:#a0a0a0; --dim:#666;
+  --green:#00e676; --green2:#00c853; --greenBg:#00e67612;
+  --red:#ff5252;   --red2:#ff1744;   --redBg:#ff525212;
+  --yellow:#ffd740; --yellowBg:#ffd74012;
+  --orange:#ff6d00; --orangeBg:#ff6d0012;
+  --silver:#c8c8c8; --silverBg:#c8c8c812;
+  --blue:#448aff;
+  --ar:'Cairo',sans-serif; --en:'Orbitron',monospace;
+  --r:14px; --r2:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--light);font-family:var(--ar);min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;outline:none;background:none;font-family:var(--ar)}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes eye{0%,92%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+@keyframes countUp{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+.fade{animation:fadeUp .35s ease both}
+
+/* ── HEADER ── */
+.hdr{
+position:sticky;top:0;z-index:100;
+background:rgba(13,13,13,.95);
+border-bottom:1px solid var(–border);
+padding:14px 18px;
+padding-top:max(14px,env(safe-area-inset-top));
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo-wrap{display:flex;align-items:center;gap:12px}
+.logo-ico{
+width:44px;height:44px;border-radius:12px;
+background:linear-gradient(135deg,#1e1e1e,#2a2a2a);
+border:1px solid var(–border2);
+display:flex;align-items:center;justify-content:center;
+flex-shrink:0;font-size:22px;
+}
+.hdr-title{font-family:var(–en);font-size:12px;font-weight:700;color:var(–white);letter-spacing:1px}
+.hdr-sub{font-size:11px;color:var(–mid);margin-top:2px}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.time-display{text-align:left}
+.time-clock{font-family:var(–en);font-size:16px;font-weight:700;color:var(–white)}
+.mkt-badge{
+display:inline-flex;align-items:center;gap:5px;
+padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;
+margin-top:4px;
+}
+.mkt-open{background:var(–greenBg);color:var(–green);border:1px solid #00e67630}
+.mkt-closed{background:var(–redBg);color:var(–red);border:1px solid #ff525230}
+.dot{width:6px;height:6px;border-radius:50%;animation:blink 1.5s infinite}
+
+.lang-btn{
+height:36px;padding:0 14px;border-radius:20px;font-size:12px;font-weight:700;
+border:1px solid var(–border2);color:var(–silver);
+transition:all .2s;
+}
+.lang-btn:active{background:var(–bg3)}
+
+/* ── TICKER ── */
+.ticker{background:var(–bg2);border-bottom:1px solid var(–border);padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-block;animation:shimmer 30s linear infinite;font-size:12px}
+.ticker-track{animation:none}
+.ticker-scroll{display:inline-block;animation:scroll-left 40s linear infinite}
+@keyframes scroll-left{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+position:fixed;bottom:0;left:0;right:0;z-index:100;
+background:rgba(13,13,13,.97);border-top:1px solid var(–border);
+display:flex;padding-bottom:env(safe-area-inset-bottom,0);
+backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.nav-item{
+flex:1;display:flex;flex-direction:column;align-items:center;
+justify-content:center;padding:10px 4px;gap:4px;
+color:var(–dim);transition:color .2s;min-height:58px;
+position:relative;
+}
+.nav-item.on{color:var(–white)}
+.nav-item.on::before{
+content:’’;position:absolute;top:0;left:20%;right:20%;
+height:2px;background:var(–silver);border-radius:0 0 3px 3px;
+}
+.nav-icon{font-size:24px;line-height:1}
+.nav-label{font-size:9px;font-weight:600;letter-spacing:.3px}
+
+/* ── MAIN ── */
+.main{padding:18px 16px 90px}
+
+/* ── SECTION TITLE ── */
+.sec{
+font-size:12px;font-weight:700;color:var(–mid);letter-spacing:2px;
+text-transform:uppercase;margin-bottom:14px;
+display:flex;align-items:center;gap:10px;
+}
+.sec::after{content:’’;flex:1;height:1px;background:var(–border)}
+
+/* ── CARDS ── */
+.card{
+background:var(–bg2);border:1px solid var(–border);
+border-radius:var(–r);padding:20px;margin-bottom:14px;
+}
+.card-sm{padding:16px;border-radius:var(–r2);margin-bottom:12px}
+
+/* ── HERO STAT ── */
+.hero{
+background:linear-gradient(135deg,var(–bg2),var(–bg3));
+border:1px solid var(–border2);border-radius:20px;
+padding:24px 20px;text-align:center;margin-bottom:18px;
+position:relative;overflow:hidden;
+}
+.hero::before{
+content:’’;position:absolute;inset:0;
+background:radial-gradient(ellipse at 50% -20%,rgba(200,200,200,.06),transparent 60%);
+}
+.hero-label{font-size:12px;color:var(–mid);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.hero-amount{font-family:var(–en);font-size:42px;font-weight:900;color:var(–white);line-height:1;animation:countUp .6s ease}
+.hero-pnl{font-size:18px;font-weight:700;margin-top:8px}
+.hero-desc{font-size:12px;color:var(–mid);margin-top:6px}
+
+/* ── STAT GRID ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{
+background:var(–bg2);border:1px solid var(–border);border-radius:var(–r2);
+padding:14px 10px;text-align:center;
+}
+.stat-num{font-family:var(–en);font-size:18px;font-weight:900;margin-bottom:4px;line-height:1}
+.stat-label{font-size:10px;color:var(–mid);letter-spacing:.5px}
+.stat-chg{font-size:11px;font-weight:600;margin-top:3px}
+
+/* ── BIG BUTTONS ── */
+.big-btn{
+display:flex;align-items:center;gap:14px;
+width:100%;padding:18px 20px;border-radius:var(–r);
+border:1px solid var(–border);margin-bottom:12px;
+background:var(–bg2);text-align:right;
+transition:all .18s;position:relative;overflow:hidden;
+}
+.big-btn:active{transform:scale(.98);background:var(–bg3)}
+.big-btn-icon{font-size:32px;flex-shrink:0}
+.big-btn-body{flex:1;min-width:0}
+.big-btn-title{font-size:16px;font-weight:700;color:var(–white);margin-bottom:3px}
+.big-btn-sub{font-size:12px;color:var(–mid);line-height:1.5}
+.big-btn-pnl{font-family:var(–en);font-size:18px;font-weight:900;flex-shrink:0}
+.big-btn-arrow{font-size:20px;color:var(–dim);flex-shrink:0}
+
+/* ── TRADE CARD ── */
+.trade{
+background:var(–bg2);border:1px solid var(–border);
+border-radius:var(–r);padding:20px;margin-bottom:14px;
+border-right:4px solid transparent;
+}
+.trade-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.trade-info{}
+.trade-ticker{font-family:var(–en);font-size:24px;font-weight:900;color:var(–white)}
+.trade-name{font-size:13px;color:var(–mid);margin-top:3px}
+.trade-alloc{font-size:12px;color:var(–dim);margin-top:2px}
+.trade-right{text-align:left}
+.trade-price{font-family:var(–en);font-size:22px;font-weight:900;color:var(–white)}
+.trade-day{font-size:12px;font-weight:600;margin-top:3px}
+
+/* STATUS BADGE */
+.status-badge{
+display:inline-flex;align-items:center;gap:5px;
+padding:6px 14px;border-radius:20px;
+font-size:12px;font-weight:700;margin-top:6px;
+}
+
+/* DATA TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:14px 0}
+.data-table th{
+padding:10px 12px;background:var(–bg3);
+color:var(–mid);font-size:11px;font-weight:600;
+letter-spacing:.5px;text-align:right;
+border-bottom:1px solid var(–border);
+}
+.data-table td{
+padding:12px;border-bottom:1px solid var(–border);
+font-size:13px;font-weight:600;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(–bg3)}
+
+/* PROGRESS TRACK */
+.prog-wrap{margin:16px 0 4px}
+.prog-labels{
+display:flex;justify-content:space-between;
+font-size:10px;color:var(–mid);margin-bottom:7px;
+}
+.prog-track{
+height:10px;background:var(–bg3);border-radius:5px;
+position:relative;overflow:visible;
+}
+.prog-fill{height:100%;border-radius:5px;transition:width .8s ease}
+.prog-pin{
+position:absolute;top:-4px;bottom:-4px;width:6px;
+border-radius:3px;transform:translateX(-50%);
+box-shadow:0 0 10px currentColor;
+transition:left .8s ease;
+}
+
+/* THESIS BOX */
+.thesis{
+background:var(–bg3);border-radius:var(–r2);
+padding:14px;margin-top:14px;
+}
+.thesis-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:13px;line-height:1.7}
+.thesis-row:last-child{margin-bottom:0}
+
+/* CHART */
+.chart-wrap{position:relative;margin:14px 0 4px}
+canvas{display:block;width:100%!important}
+
+/* FILTER TABS */
+.filter-row{display:flex;gap:8px;margin-bottom:16px}
+.filter-btn{
+flex:1;height:42px;border-radius:10px;font-size:13px;font-weight:600;
+border:1px solid var(–border);color:var(–mid);
+transition:all .2s;
+}
+.filter-btn.on{
+background:var(–bg3);color:var(–white);border-color:var(–border2);
+}
+
+/* REPORT ROWS */
+.report-row{
+display:flex;align-items:center;gap:14px;
+padding:16px 18px;border-radius:var(–r);
+border:1px solid var(–border);background:var(–bg2);
+margin-bottom:10px;width:100%;text-align:right;
+transition:all .2s;
+}
+.report-row:active{background:var(–bg3)}
+.report-row-icon{font-size:28px;flex-shrink:0}
+.report-row-body{flex:1}
+.report-row-title{font-size:15px;font-weight:700;color:var(–white)}
+.report-row-sub{font-size:12px;color:var(–mid);margin-top:2px}
+.report-row-arrow{font-size:22px;color:var(–dim);margin-right:auto;flex-shrink:0}
+
+/* ROBOT */
+.robot-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
+.robot-svg{animation:float 4s ease-in-out infinite}
+
+/* LOADING */
+.loader{
+display:flex;flex-direction:column;align-items:center;
+justify-content:center;min-height:100vh;gap:22px;padding:24px;
+}
+.ring{
+width:56px;height:56px;border:3px solid var(–border);
+border-top:3px solid var(–silver);border-radius:50%;
+animation:spin .9s linear infinite;
+}
+.boot-box{
+width:100%;max-width:360px;background:var(–bg2);
+border:1px solid var(–border);border-radius:var(–r);
+padding:18px;font-family:monospace;font-size:12px;
+}
+.bl{color:var(–dim);margin-bottom:4px;animation:fadeUp .2s ease both}
+.bl.g{color:var(–green)}.bl.r{color:var(–red)}.bl.w{color:var(–white)}
+
+/* SEP */
+.sep{height:1px;background:var(–border);margin:14px 0}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(–dim)}
+.empty-icon{font-size:52px;margin-bottom:16px;opacity:.5}
+
+/* COLORS */
+.g{color:var(–green)!important} .r{color:var(–red)!important}
+.y{color:var(–yellow)!important} .w{color:var(–white)!important}
+.m{color:var(–mid)!important}
+</style>
+
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useCallback,useRef,useMemo}=React;
+
+/* ══════════ TRANSLATIONS ══════════ */
+const T={
+ar:{
+title:“محمد ألفا تريدنج”,sub:“محاكاة الصفقات • بيانات حية”,
+overview:“الرئيسية”,alpha:“ألفا”,turbo:“تيربو”,scanner:“السوق”,reports:“تقارير”,
+open:“مفتوح”,closed:“مغلق”,
+capital:“رأس المال”,totalPnl:“الربح / الخسارة”,
+allTrades:“الكل”,openTrades:“المفتوحة”,closedTrades:“المنجزة”,
+entry:“الدخول”,stop:“وقف الخسارة”,t1:“الهدف 1”,t2:“الهدف 2”,
+current:“السعر الحالي”,pnl:“ر/خ ($)”,pnlPct:“ر/خ (%)”,
+toTarget:“للهدف”,rr:“المعدل”,duration:“المدة”,alloc:“التخصيص”,
+shares:“الأسهم”,maxGain:“أقصى ربح”,maxLoss:“أقصى خسارة”,
+thesis:“السبب”,riskNote:“المخاطرة”,
+refresh:“تحديث”,lang:“EN”,
+dlCSV:“تحميل CSV”,dlJSON:“تحميل JSON”,
+alphaReport:“تقرير بوت ألفا”,turboReport:“تقرير بوت تيربو”,
+fullReport:“تقرير موحد للمحفظتين”,
+summary:“ملخص”,indices:“مؤشرات السوق”,positions:“المراكز الحالية”,
+progress:“التقدم نحو الهدف”,
+noTrades:“لا توجد صفقات في هذه الفئة”,
+fetching:“جاري جلب البيانات الحية…”,
+err:“تعذّر الاتصال — سيُعاد المحاولة”,
+portfolioA:“محفظة ألفا — معتدل”,portfolioT:“محفظة تيربو — عدواني”,
+botA_title:“ALPHA BOT”,botA_desc:“استراتيجية معتدلة • سوينق 3-14 يوم • يتبع التحليل”,
+botT_title:“TURBO BOT”,botT_desc:“مخاطرة عالية • صفقات قليلة • أسرع نمو لرأس المال”,
+},
+en:{
+title:“Mohanad Alpha Trading”,sub:“Trade Simulation • Live Data”,
+overview:“Home”,alpha:“Alpha”,turbo:“Turbo”,scanner:“Market”,reports:“Reports”,
+open:“OPEN”,closed:“CLOSED”,
+capital:“Capital”,totalPnl:“Total P&L”,
+allTrades:“All”,openTrades:“Open”,closedTrades:“Closed”,
+entry:“Entry”,stop:“Stop Loss”,t1:“Target 1”,t2:“Target 2”,
+current:“Current”,pnl:“P&L ($)”,pnlPct:“P&L (%)”,
+toTarget:“To Target”,rr:“R:R”,duration:“Duration”,alloc:“Alloc”,
+shares:“Shares”,maxGain:“Max Gain”,maxLoss:“Max Loss”,
+thesis:“Thesis”,riskNote:“Risk”,
+refresh:“Refresh”,lang:“عربي”,
+dlCSV:“Download CSV”,dlJSON:“Download JSON”,
+alphaReport:“Alpha Bot Report”,turboReport:“Turbo Bot Report”,
+fullReport:“Full Combined Report”,
+summary:“Summary”,indices:“Market Indices”,positions:“Positions”,
+progress:“Progress to Target”,
+noTrades:“No trades in this category”,
+fetching:“Fetching live prices…”,
+err:“Connection failed — retrying”,
+portfolioA:“Alpha Portfolio — Moderate”,portfolioT:“Turbo Portfolio — Aggressive”,
+botA_title:“ALPHA BOT”,botA_desc:“Moderate risk • Swing 3-14 days • Follows analysis”,
+botT_title:“TURBO BOT”,botT_desc:“High risk • Fewer trades • Max capital growth”,
+}
+};
+
+/* ══════════ SETUPS ══════════ */
+const SETUPS={
+alpha:[
+{ticker:“ORCL”,name:“Oracle”,entry:163,stop:153,t1:190,t2:210,riskPct:6,alloc:40,duration:“7-14 يوم”,
+thesis_ar:“أرباح Q3 قوية + OCI +84% + تراجع 52% من القمة — مستوى قيمة ممتاز”,
+thesis_en:“Strong Q3 + OCI+84% + down 52% from peak — excellent value level”,
+risk_ar:“الفيد المتشدد قد يؤخر الارتداد”,risk_en:“Hawkish Fed may delay recovery”},
+{ticker:“LRCX”,name:“Lam Research”,entry:235,stop:218,t1:258,t2:268,riskPct:5,alloc:35,duration:“5-10 أيام”,
+thesis_ar:“إضافة S&P100 + معدات HBM لنمو AI + تراجع مبالغ فيه”,
+thesis_en:“S&P100 addition + HBM equipment for AI growth + oversold”,
+risk_ar:“تراجع MU يسحبه للأسفل”,risk_en:“MU pullback drags it lower”},
+{ticker:“DAL”,name:“Delta Air Lines”,entry:54.5,stop:51,t1:61,t2:64,riskPct:5,alloc:25,duration:“3-7 أيام”,
+thesis_ar:“رفع توجيهات Q1 رسمياً + قطاع السفر لم يُسعَّر بعد”,
+thesis_en:“Q1 guidance officially raised + travel sector not yet priced”,
+risk_ar:“ارتفاع أسعار النفط يضغط الهامش”,risk_en:“Oil price spike crushes margin”},
+],
+turbo:[
+{ticker:“MU”,name:“Micron Technology”,entry:95,stop:87,t1:108,t2:120,riskPct:8,alloc:60,duration:“2-5 أيام”,
+thesis_ar:“أرباح FQ2 قادمة — HBM 100% مباع — نمو AI Memory متسارع”,
+thesis_en:“FQ2 earnings upcoming — HBM 100% sold — accelerating AI Memory growth”,
+risk_ar:“Buy rumor sell news بعد الإعلان”,risk_en:“Buy rumor sell news after announcement”},
+{ticker:“AMD”,name:“Advanced Micro Devices”,entry:116,stop:108,t1:135,t2:148,riskPct:7,alloc:40,duration:“5-10 أيام”,
+thesis_ar:“موجة رقائق AI + يتبع قوة MU + تراجع مبالغ فيه من القمة”,
+thesis_en:“AI chip wave + MU coattail + severely oversold from peak”,
+risk_ar:“ضعف MU يسحب AMD معه”,risk_en:“MU weakness pulls AMD down”},
+],
+};
+
+const ALL_TK=[…new Set([…SETUPS.alpha.map(s=>s.ticker),…SETUPS.turbo.map(s=>s.ticker),“SPY”,“QQQ”,“NVDA”,“AMAT”])];
+const PORT=300;
+
+/* ══════════ UTILS ══════════ */
+const ryd=()=>new Date(new Date().toLocaleString(“en-US”,{timeZone:“Asia/Riyadh”}));
+const fTs=d=>d.toLocaleTimeString(“en-US”,{hour:“2-digit”,minute:“2-digit”,hour12:false});
+const f$=n=>n==null?”—”:”$”+Number(n).toFixed(2);
+const fp=n=>n==null?”—”:(n>=0?”+”:””)+Number(n).toFixed(2)+”%”;
+const clr=n=>n==null?“var(–mid)”:n>=0?“var(–green)”:“var(–red)”;
+
+/* ══════════ PRICE FETCH ══════════ */
+const PROXY=“https://api.allorigins.win/get?url=”;
+const YF=“https://query1.finance.yahoo.com/v8/finance/chart/”;
+
+async function fetchOne(tk){
+try{
+const url=encodeURIComponent(`${YF}${tk}?interval=1m&range=1d`);
+const r=await fetch(PROXY+url,{signal:AbortSignal.timeout(9000)});
+if(!r.ok)throw new Error();
+const d=JSON.parse((await r.json()).contents);
+const m=d?.chart?.result?.[0]?.meta;
+if(!m)throw new Error();
+return{tk,price:m.regularMarketPrice,prev:m.chartPreviousClose||m.previousClose,
+high:m.regularMarketDayHigh,low:m.regularMarketDayLow,vol:m.regularMarketVolume};
+}catch{return{tk,price:null}}
+}
+async function fetchAll(){
+const res=await Promise.allSettled(ALL_TK.map(fetchOne));
+const map={};
+res.forEach(r=>{if(r.status===“fulfilled”&&r.value)map[r.value.tk]=r.value});
+return map;
+}
+
+/* ══════════ PORTFOLIO CALC ══════════ */
+function calcPort(setups,prices){
+return setups.map((s,i)=>{
+const p=prices[s.ticker];
+const cur=p?.price;
+const amt=Math.round(PORT*s.alloc/100);
+const shr=cur?+(amt/s.entry).toFixed(3):null;
+let pnlUSD=null,pnlPct=null,st=“PENDING”;
+if(cur&&shr){
+pnlUSD=+((cur-s.entry)*shr).toFixed(2);
+pnlPct=+((cur-s.entry)/s.entry*100).toFixed(2);
+if(cur<=s.stop)st=“STOPPED”;
+else if(cur>=s.t2)st=“TARGET2”;
+else if(cur>=s.t1)st=“TARGET1”;
+else if(pnlPct>0.5)st=“PROFIT”;
+else if(pnlPct<-0.5)st=“LOSS”;
+else st=“FLAT”;
+}
+const dayChg=(cur&&p.prev)?((cur-p.prev)/p.prev*100):null;
+const maxProfit=+((s.t1-s.entry)/s.entry*100).toFixed(1);
+const rr=+((s.t1-s.entry)/(s.entry-s.stop)).toFixed(2);
+const toTarget=cur?+((s.t1-cur)/cur*100).toFixed(2):null;
+return{…s,cur,amt,shr,pnlUSD,pnlPct,st,dayChg,maxProfit,rr,toTarget};
+});
+}
+
+/* ══════════ EXPORT ══════════ */
+function exportCSV(rows,fn){
+const k=Object.keys(rows[0]);
+const lines=[k.join(”,”),…rows.map(r=>k.map(kk=>`"${r[kk]??""}"` ).join(”,”))];
+const b=new Blob([”\uFEFF”+lines.join(”\n”)],{type:“text/csv;charset=utf-8”});
+const a=document.createElement(“a”);a.href=URL.createObjectURL(b);a.download=fn;a.click();
+}
+function exportJSON(data,fn){
+const b=new Blob([JSON.stringify(data,null,2)],{type:“application/json”});
+const a=document.createElement(“a”);a.href=URL.createObjectURL(b);a.download=fn;a.click();
+}
+
+/* ══════════ SPARKLINE CHART ══════════ */
+function MiniChart({values=[],color=“var(–green)”,height=50}){
+const ref=useRef();
+useEffect(()=>{
+const canvas=ref.current;if(!canvas||!values.length)return;
+const ctx=canvas.getContext(“2d”);
+const W=canvas.offsetWidth,H=height;
+canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);
+const min=Math.min(…values),max=Math.max(…values);
+const range=max-min||1;
+ctx.clearRect(0,0,W,H);
+const grad=ctx.createLinearGradient(0,0,0,H);
+grad.addColorStop(0,color.replace(”)”,”, .3)”).replace(“var(–green)”,“rgba(0,230,118,.3)”).replace(“var(–red)”,“rgba(255,82,82,.3)”));
+grad.addColorStop(1,“rgba(0,0,0,0)”);
+ctx.beginPath();
+values.forEach((v,i)=>{
+const x=(i/(values.length-1))*W;
+const y=H-(((v-min)/range)*(H-8)+4);
+i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+});
+ctx.strokeStyle=color.replace(“var(–green)”,”#00e676”).replace(“var(–red)”,”#ff5252”).replace(“var(–silver)”,”#c8c8c8”);
+ctx.lineWidth=2;ctx.lineJoin=“round”;ctx.stroke();
+const lastX=(W),lastY=H-(((values[values.length-1]-min)/range)*(H-8)+4);
+ctx.lineTo(lastX,H);ctx.lineTo(0,H);ctx.closePath();
+ctx.fillStyle=grad;ctx.fill();
+},[values,color,height]);
+return <canvas ref={ref} style={{width:“100%”,height:height+“px”,display:“block”}}/>;
+}
+
+/* ══════════ ROBOT SVG ══════════ */
+function Robot({size=100,orange=false}){
+const c=orange?”#ff6d00”:”#c8c8c8”;
+const dim=orange?”#7a3300”:”#686868”;
+return(
+<svg width={size} height={size*1.35} viewBox=“0 0 100 135” fill=“none”
+className=“robot-svg”
+style={{filter:`drop-shadow(0 0 14px ${orange?"rgba(255,109,0,.3)":"rgba(200,200,200,.25)"})`}}>
+<path d="M22 60 Q18 50 20 38 Q26 16 50 14 Q74 16 80 38 Q82 50 78 60 L72 55 Q56 70 50 70 Q44 70 28 55 Z" fill="#1a1a1a" stroke={dim} strokeWidth=".8"/>
+<ellipse cx="50" cy="42" rx="21" ry="23" fill="#111" stroke={dim} strokeWidth=".6"/>
+<ellipse cx=“41” cy=“38” rx=“5.5” ry=“5.5” fill={c} style={{animation:“eye 5s infinite”}}/>
+<ellipse cx=“59” cy=“38” rx=“5.5” ry=“5.5” fill={c} style={{animation:“eye 5s .3s infinite”}}/>
+<ellipse cx="41" cy="38" rx="2.5" ry="2.5" fill="white" opacity=".5"/>
+<ellipse cx="59" cy="38" rx="2.5" ry="2.5" fill="white" opacity=".5"/>
+<path d="M41 50 Q50 55 59 50" stroke={dim} strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+<path d="M28 55 Q22 62 20 96 L80 96 Q78 62 72 55 L65 60 Q55 72 50 72 Q45 72 35 60 Z" fill="#181818" stroke={dim} strokeWidth=".7"/>
+<rect x="33" y="76" width="34" height="16" rx="4" fill="#111" stroke={dim} strokeWidth=".6"/>
+<text x="37" y="87" fontSize="3.5" fill={c} opacity=".8" fontFamily="monospace">{’>’} trade.sh</text>
+<path d="M28 58 Q16 72 19 92 L31 90 Q26 74 30 66 Z" fill="#181818" stroke={dim} strokeWidth=".6"/>
+<path d="M72 58 Q84 72 81 92 L69 90 Q74 74 70 66 Z" fill="#181818" stroke={dim} strokeWidth=".6"/>
+</svg>
+);
+}
+
+/* ══════════ STATUS BADGE ══════════ */
+function StatusBadge({st,lang}){
+const m={
+TARGET2:{ar:“هدف 2 ✓✓”,en:“TARGET 2 ✓✓”,bg:“var(–greenBg)”,c:“var(–green)”,b:”#00e67630”},
+TARGET1:{ar:“هدف 1 ✓”,en:“TARGET 1 ✓”,bg:“var(–greenBg)”,c:“var(–green)”,b:”#00e67630”},
+PROFIT: {ar:“في ربح ▲”,en:“IN PROFIT ▲”,bg:“var(–greenBg)”,c:“var(–green)”,b:”#00e67630”},
+FLAT:   {ar:“ثابت ━”,en:“FLAT ━”,bg:“var(–bg3)”,c:“var(–mid)”,b:“var(–border)”},
+LOSS:   {ar:“في خسارة ▼”,en:“IN LOSS ▼”,bg:“var(–redBg)”,c:“var(–red)”,b:”#ff525230”},
+STOPPED:{ar:“موقوف ✕”,en:“STOPPED ✕”,bg:“var(–redBg)”,c:“var(–red)”,b:”#ff525230”},
+PENDING:{ar:“انتظار …”,en:“PENDING …”,bg:“var(–yellowBg)”,c:“var(–yellow)”,b:”#ffd74030”},
+};
+const v=m[st]||m.PENDING;
+return(
+<div className=“status-badge” style={{background:v.bg,color:v.c,border:`1px solid ${v.b}`}}>
+{lang===“ar”?v.ar:v.en}
+</div>
+);
+}
+
+/* ══════════ TRADE CARD ══════════ */
+function TradeCard({p,lang,orange}){
+const t=T[lang];
+const accentColor=orange?“var(–orange)”:“var(–silver)”;
+const range=p.t1-p.stop;
+const pos=p.cur?Math.min(100,Math.max(0,((p.cur-p.stop)/range)*100)):null;
+
+// fake mini chart data based on entry and current
+const chartData=useMemo(()=>{
+const base=p.entry;
+const cur=p.cur||base;
+const pts=12;
+return Array.from({length:pts},(_,i)=>{
+const t=i/(pts-1);
+const noise=(Math.random()-.5)*base*.02;
+return base+(cur-base)*t+noise;
+});
+},[p.ticker,p.cur]);
+
+return(
+<div className="trade" style={{borderRightColor:accentColor}}>
+{/* HEAD */}
+<div className="trade-head">
+<div className="trade-info">
+<div className="trade-ticker">{p.ticker}</div>
+<div className="trade-name">{p.name}</div>
+<div className=“trade-alloc” style={{color:“var(–mid)”}}>
+${p.amt} ({p.alloc}%) • {p.shr??”-”} {lang===“ar”?“سهم”:“shares”}
+</div>
+<StatusBadge st={p.st} lang={lang}/>
+</div>
+<div className="trade-right">
+<div className="trade-price">{f$(p.cur)}</div>
+<div className="trade-day" style={{color:clr(p.dayChg)}}>{fp(p.dayChg)}</div>
+<div style={{fontSize:11,color:“var(–mid)”,marginTop:4}}>{lang===“ar”?“المدة:”:””} {p.duration}</div>
+</div>
+</div>
+
+```
+  {/* MINI CHART */}
+  <div className="chart-wrap">
+    <MiniChart values={chartData} color={p.pnlUSD>=0||!p.cur?"var(--green)":"var(--red)"} height={50}/>
+  </div>
+
+  {/* DATA TABLE */}
+  <div style={{overflowX:"auto",margin:"0 -4px"}}>
+    <table className="data-table" style={{minWidth:340}}>
+      <thead>
+        <tr>
+          <th>{t.entry}</th><th>{t.stop}</th><th>{t.t1}</th><th>{t.t2}</th>
+          <th>{t.current}</th><th>{t.pnl}</th><th>{t.pnlPct}</th><th>{t.rr}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="w">{f$(p.entry)}</td>
+          <td className="r">{f$(p.stop)}</td>
+          <td className="g">{f$(p.t1)}</td>
+          <td style={{color:"#00c853"}}>{f$(p.t2)}</td>
+          <td className="w"style={{fontSize:15,fontWeight:900}}>{f$(p.cur)}</td>
+          <td style={{color:clr(p.pnlUSD),fontSize:14,fontWeight:900}}>
+            {p.pnlUSD!=null?(p.pnlUSD>=0?"+":"")+"$"+Math.abs(p.pnlUSD).toFixed(2):"—"}
+          </td>
+          <td style={{color:clr(p.pnlPct),fontWeight:700}}>{fp(p.pnlPct)}</td>
+          <td className="y">1:{p.rr}</td>
+        </tr>
+        <tr>
+          <td colSpan={2} style={{color:"var(--mid)",fontSize:11}}>{t.toTarget}</td>
+          <td colSpan={2} style={{color:"var(--yellow)",fontWeight:700,fontSize:13}}>{fp(p.toTarget)}</td>
+          <td colSpan={2} style={{color:"var(--mid)",fontSize:11}}>{t.maxGain}</td>
+          <td colSpan={2} className="g" style={{fontSize:13,fontWeight:700}}>+{p.maxProfit}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  {/* PROGRESS */}
+  {pos!==null&&(
+    <div className="prog-wrap">
+      <div className="prog-labels">
+        <span style={{color:"var(--red)"}}>STOP {f$(p.stop)}</span>
+        <span style={{color:accentColor,fontWeight:700}}>{f$(p.cur)}</span>
+        <span style={{color:"var(--green)"}}>T1 {f$(p.t1)}</span>
+      </div>
+      <div className="prog-track">
+        <div style={{position:"absolute",inset:0,borderRadius:5,
+          background:"linear-gradient(90deg,#ff525230,#c8c8c820,#00e67630)",opacity:.5}}/>
+        <div className="prog-pin" style={{left:pos+"%",background:accentColor,color:accentColor,width:8}}/>
+      </div>
+    </div>
+  )}
+
+  {/* THESIS */}
+  <div className="thesis">
+    <div className="thesis-row">
+      <span style={{fontSize:16,flex:"0 0 22px"}}>✅</span>
+      <span style={{color:"var(--light)",fontSize:13}}>
+        {lang==="ar"?p.thesis_ar:p.thesis_en}
+      </span>
+    </div>
+    <div className="thesis-row">
+      <span style={{fontSize:16,flex:"0 0 22px"}}>⚠️</span>
+      <span style={{color:"var(--mid)",fontSize:13}}>
+        {lang==="ar"?p.risk_ar:p.risk_en}
+      </span>
+    </div>
+    <div className="thesis-row">
+      <span style={{fontSize:16,flex:"0 0 22px"}}>⏱</span>
+      <span style={{color:"var(--mid)",fontSize:13}}>
+        {lang==="ar"?"المدة المتوقعة:":"Expected duration:"} <span style={{color:"var(--yellow)",fontWeight:700}}>{p.duration}</span>
+      </span>
+    </div>
+  </div>
+</div>
+```
+
+);
+}
+
+/* ══════════ BOT PAGE ══════════ */
+function BotPage({port,totalPnl,t,lang,orange,title,desc,doExport}){
+const [filter,setFilter]=useState(“all”);
+const acc=orange?“var(–orange)”:“var(–silver)”;
+const filtered=port.filter(p=>{
+if(filter===“all”)return true;
+if(filter===“open”)return![“STOPPED”,“TARGET1”,“TARGET2”].includes(p.st);
+return[“STOPPED”,“TARGET1”,“TARGET2”].includes(p.st);
+});
+
+return(
+<div className="fade">
+{/* BOT HEADER */}
+<div style={{display:“flex”,alignItems:“center”,gap:14,marginBottom:18}}>
+<Robot size={70} orange={orange}/>
+<div style={{flex:1}}>
+<div style={{fontFamily:“var(–en)”,fontSize:16,fontWeight:900,color:orange?“var(–orange)”:“var(–white)”}}>{title}</div>
+<div style={{fontSize:13,color:“var(–mid)”,marginTop:4,lineHeight:1.6}}>{desc}</div>
+<div style={{display:“flex”,alignItems:“center”,gap:6,marginTop:6}}>
+<span style={{width:7,height:7,borderRadius:“50%”,background:orange?“var(–orange)”:“var(–green)”,display:“inline-block”,animation:“blink 1.5s infinite”}}/>
+<span style={{fontSize:11,color:orange?“var(–orange)”:“var(–green)”,fontWeight:600,letterSpacing:1}}>ONLINE</span>
+</div>
+</div>
+</div>
+
+```
+  {/* HERO */}
+  <div className="hero" style={{borderColor:orange?"#ff6d0030":"var(--border)"}}>
+    <div className="hero-label">{t.capital}</div>
+    <div className="hero-amount" style={{color:orange?"var(--orange)":"var(--white)"}}>${PORT}</div>
+    <div className="hero-pnl" style={{color:clr(totalPnl)}}>
+      {totalPnl>=0?"+":""}${Math.abs(totalPnl).toFixed(2)}
+      <span style={{fontSize:14,marginRight:8,color:"var(--mid)"}}> ({fp(totalPnl/PORT*100)})</span>
+    </div>
+    <div className="hero-desc">
+      {t.maxGain}: <span style={{color:"var(--green)",fontWeight:700}}>
+        +${port.reduce((s,p)=>s+Math.round(p.amt*p.maxProfit/100),0)}
+      </span>
+      <span style={{color:"var(--mid)",margin:"0 10px"}}>•</span>
+      {t.maxLoss}: <span style={{color:"var(--red)",fontWeight:700}}>
+        -${port.reduce((s,p)=>s+Math.round(p.amt*p.riskPct/100),0)}
+      </span>
+    </div>
+  </div>
+
+  {/* FILTER */}
+  <div className="filter-row">
+    {[["all",t.allTrades],["open",t.openTrades],["closed",t.closedTrades]].map(([k,lb])=>(
+      <button key={k} className={`filter-btn${filter===k?" on":""}`} onClick={()=>setFilter(k)}>{lb}</button>
+    ))}
+  </div>
+
+  {filtered.length===0
+    ?<div className="empty"><div className="empty-icon">📭</div><div>{t.noTrades}</div></div>
+    :filtered.map(p=><TradeCard key={p.ticker} p={p} lang={lang} orange={orange}/>)
+  }
+
+  {/* SUMMARY */}
+  <div className="stat-grid">
+    {[[t.maxGain,"+$"+port.reduce((s,p)=>s+Math.round(p.amt*p.maxProfit/100),0),"var(--green)"],
+      [t.maxLoss,"-$"+port.reduce((s,p)=>s+Math.round(p.amt*p.riskPct/100),0),"var(--red)"],
+      ["P&L",(totalPnl>=0?"+":"")+"$"+Math.abs(totalPnl).toFixed(0),clr(totalPnl)]
+    ].map(([l,v,c])=>(
+      <div key={l} className="stat-box">
+        <div className="stat-num" style={{color:c,fontSize:15}}>{v}</div>
+        <div className="stat-label">{l}</div>
+      </div>
+    ))}
+  </div>
+
+  {/* DOWNLOAD */}
+  <div style={{display:"flex",gap:10,marginTop:4}}>
+    <button className="big-btn" style={{flex:1,padding:"14px 16px"}} onClick={()=>doExport("csv")}>
+      <span style={{fontSize:22}}>📊</span>
+      <span style={{fontSize:14,fontWeight:700,color:"var(--white)"}}>{t.dlCSV}</span>
+    </button>
+    <button className="big-btn" style={{flex:1,padding:"14px 16px"}} onClick={()=>doExport("json")}>
+      <span style={{fontSize:22}}>🗂</span>
+      <span style={{fontSize:14,fontWeight:700,color:"var(--white)"}}>{t.dlJSON}</span>
+    </button>
+  </div>
+</div>
+```
+
+);
+}
+
+/* ══════════ MAIN APP ══════════ */
+function App(){
+const [prices,setP]=useState({});
+const [loading,setL]=useState(true);
+const [boot,setBoot]=useState([]);
+const [tab,setTab]=useState(“overview”);
+const [now,setNow]=useState(ryd());
+const [lang,setLang]=useState(“ar”);
+const [lastUpd,setLU]=useState(null);
+const [err,setErr]=useState(null);
+const [filter,setFilter]=useState(“all”);
+const t=T[lang];
+
+useEffect(()=>{const i=setInterval(()=>setNow(ryd()),1000);return()=>clearInterval(i)},[]);
+
+// Update html dir
+useEffect(()=>{
+document.documentElement.setAttribute(“dir”,lang===“ar”?“rtl”:“ltr”);
+document.documentElement.setAttribute(“lang”,lang);
+},[lang]);
+
+const BOOT=[
+{ms:0,c:“w”,tx:“╔══════════════════════════════╗”},
+{ms:80,c:“w”,tx:“║  MOHANAD ALPHA TRADING v5.0  ║”},
+{ms:160,c:“w”,tx:“╚══════════════════════════════╝”},
+{ms:320,c:””,tx:”[SYS] Connecting to market feed…”},
+{ms:600,c:“g”,tx:”[OK]  Yahoo Finance API connected”},
+{ms:800,c:””,tx:”[SYS] Loading ALPHA BOT setup…”},
+{ms:1000,c:””,tx:”[SYS] Loading TURBO BOT setup…”},
+{ms:1200,c:“g”,tx:”[OK]  Both bots ONLINE and ready”},
+{ms:1500,c:“r”,tx:”[LIVE] Fetching real-time prices…”},
+];
+useEffect(()=>{BOOT.forEach(({ms,c,tx})=>setTimeout(()=>setBoot(p=>[…p,{c,tx}]),ms))},[]);
+
+const fetchPrices=useCallback(async()=>{
+setL(true);setErr(null);
+try{const m=await fetchAll();setP(m);setLU(new Date())}
+catch(e){setErr(e.message)}
+finally{setL(false)}
+},[]);
+
+useEffect(()=>{const id=setTimeout(fetchPrices,1800);return()=>clearTimeout(id)},[]);
+useEffect(()=>{const id=setInterval(fetchPrices,90000);return()=>clearInterval(id)},[fetchPrices]);
+
+const aPort=useMemo(()=>calcPort(SETUPS.alpha,prices),[prices]);
+const tPort=useMemo(()=>calcPort(SETUPS.turbo,prices),[prices]);
+const tPnlA=aPort.reduce((s,p)=>s+(p.pnlUSD||0),0);
+const tPnlT=tPort.reduce((s,p)=>s+(p.pnlUSD||0),0);
+
+const H=now.getHours()+now.getMinutes()/60;
+const mktOpen=H>=16.5&&H<23;
+
+const doExport=(port,name,fmt)=>{
+const rows=port.map(p=>({
+Ticker:p.ticker,Name:p.name,Entry:p.entry,Stop:p.stop,
+Target1:p.t1,Target2:p.t2,CurrentPrice:p.cur??”—”,
+PnLUSD:p.pnlUSD??”—”,PnLPct:p.pnlPct??”—”,
+DayChange:p.dayChg??”—”,ToTarget:p.toTarget??”—”,
+Status:p.st,Alloc:p.amt,Shares:p.shr??”—”,
+RR:p.rr,MaxProfit:p.maxProfit+”%”,Duration:p.duration,
+}));
+const ts=new Date().toISOString().slice(0,10);
+if(fmt===“csv”)exportCSV(rows,`${name}_${ts}.csv`);
+else exportJSON({bot:name,date:ts,portfolio:PORT,pnl:name===“ALPHA”?tPnlA:tPnlT,trades:rows},`${name}_${ts}.json`);
+};
+
+/* LOADING */
+if(loading&&!Object.keys(prices).length)return(
+<div className="loader">
+<Robot size={100}/>
+<div className="ring"/>
+<div className="boot-box">
+{boot.map((l,i)=><div key={i} className={`bl ${l.c}`} style={{animationDelay:i*.04+“s”}}>{l.tx}</div>)}
+{boot.length>0&&<div className=“bl r” style={{animation:“blink 1s infinite”,marginTop:6}}>█</div>}
+</div>
+<div style={{color:“var(–dim)”,fontSize:12,letterSpacing:1.5,animation:“blink 1.5s infinite”,textAlign:“center”}}>
+{t.fetching}
+</div>
+</div>
+);
+
+const NAV=[
+{k:“overview”,icon:“🏠”,lb:t.overview},
+{k:“alpha”,icon:“🤖”,lb:t.alpha},
+{k:“turbo”,icon:“⚡”,lb:t.turbo},
+{k:“scanner”,icon:“📈”,lb:t.scanner},
+{k:“reports”,icon:“📊”,lb:t.reports},
+];
+
+return(
+<div style={{background:“var(–bg)”,minHeight:“100vh”}}>
+
+```
+  {/* HEADER */}
+  <div className="hdr">
+    <div className="hdr-inner">
+      <div className="logo-wrap">
+        <div className="logo-ico">🤖</div>
+        <div>
+          <div className="hdr-title">M.A.T</div>
+          <div className="hdr-sub">{t.sub}</div>
+        </div>
+      </div>
+      <div className="hdr-right">
+        <button className="lang-btn" onClick={()=>setLang(l=>l==="ar"?"en":"ar")}>{t.lang}</button>
+        <div className="time-display">
+          <div className="time-clock">{fTs(now)}</div>
+          <div className={`mkt-badge ${mktOpen?"mkt-open":"mkt-closed"}`}>
+            <span className="dot" style={{background:mktOpen?"var(--green)":"var(--red)"}}/>
+            {mktOpen?t.open:t.closed}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* TICKER */}
+  <div className="ticker">
+    <div style={{overflow:"hidden",whiteSpace:"nowrap"}}>
+      <span style={{display:"inline-block",animation:"scroll-left 50s linear infinite",fontSize:12,letterSpacing:.5}}>
+        {ALL_TK.map(tk=>{
+          const p=prices[tk];
+          const chg=p?.price&&p?.prev?((p.price-p.prev)/p.prev*100):null;
+          return(
+            <span key={tk} style={{margin:"0 18px"}}>
+              <span style={{color:"var(--light)",fontWeight:700}}>{tk} </span>
+              <span style={{color:"var(--white)",fontFamily:"var(--en)",fontWeight:900}}>
+                {p?.price?"$"+p.price.toFixed(2):"—"}
+              </span>{" "}
+              {chg!=null&&<span style={{color:clr(chg),fontWeight:700}}>{fp(chg)}</span>}
+              <span style={{color:"var(--border2)",margin:"0 10px"}}>|</span>
+            </span>
+          );
+        })}
+      </span>
+    </div>
+  </div>
+
+  {/* CONTENT */}
+  <div className="main">
+
+    {/* ── OVERVIEW ── */}
+    {tab==="overview"&&(
+      <div className="fade">
+        <div className="robot-wrap">
+          <Robot size={110}/>
+          <div style={{fontFamily:"var(--en)",fontSize:12,color:"var(--dim)",letterSpacing:3,marginTop:8}}>
+            HELLO, FRIEND
+          </div>
+        </div>
+
+        {/* Indices */}
+        <div className="sec">{t.indices}</div>
+        <div className="stat-grid" style={{marginBottom:18}}>
+          {[{tk:"SPY",n:"S&P 500"},{tk:"QQQ",n:"NASDAQ"},{tk:"NVDA",n:"NVIDIA"}].map(({tk,n})=>{
+            const p=prices[tk];
+            const chg=p?.price&&p?.prev?((p.price-p.prev)/p.prev*100):null;
+            return(
+              <div key={tk} className="stat-box">
+                <div className="stat-num" style={{color:clr(chg),fontSize:16}}>
+                  {p?.price?"$"+p.price.toFixed(0):"—"}
+                </div>
+                <div className="stat-label">{n}</div>
+                <div className="stat-chg" style={{color:clr(chg)}}>{chg!=null?fp(chg):"—"}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Portfolio buttons */}
+        <div className="sec">{t.positions}</div>
+        <button className="big-btn" style={{borderRight:"4px solid var(--silver)"}} onClick={()=>setTab("alpha")}>
+          <div className="big-btn-icon">🤖</div>
+          <div className="big-btn-body">
+            <div className="big-btn-title">{t.portfolioA}</div>
+            <div className="big-btn-sub">{aPort.length} {lang==="ar"?"صفقات":"trades"} • ${PORT}</div>
+          </div>
+          <div className="big-btn-pnl" style={{color:clr(tPnlA)}}>
+            {tPnlA>=0?"+":""}${Math.abs(tPnlA).toFixed(0)}
+          </div>
+          <div className="big-btn-arrow">›</div>
+        </button>
+        <button className="big-btn" style={{borderRight:"4px solid var(--orange)"}} onClick={()=>setTab("turbo")}>
+          <div className="big-btn-icon">⚡</div>
+          <div className="big-btn-body">
+            <div className="big-btn-title">{t.portfolioT}</div>
+            <div className="big-btn-sub">{tPort.length} {lang==="ar"?"صفقات":"trades"} • ${PORT}</div>
+          </div>
+          <div className="big-btn-pnl" style={{color:clr(tPnlT)}}>
+            {tPnlT>=0?"+":""}${Math.abs(tPnlT).toFixed(0)}
+          </div>
+          <div className="big-btn-arrow">›</div>
+        </button>
+
+        {/* Combined summary */}
+        <div className="sec" style={{marginTop:4}}>{t.summary}</div>
+        <div className="stat-grid">
+          {[["Alpha P&L",(tPnlA>=0?"+":"")+"$"+Math.abs(tPnlA).toFixed(0),clr(tPnlA)],
+            ["Turbo P&L",(tPnlT>=0?"+":"")+"$"+Math.abs(tPnlT).toFixed(0),clr(tPnlT)],
+            ["Total",(tPnlA+tPnlT>=0?"+":"")+"$"+Math.abs(tPnlA+tPnlT).toFixed(0),clr(tPnlA+tPnlT)]
+          ].map(([l,v,c])=>(
+            <div key={l} className="stat-box">
+              <div className="stat-num" style={{color:c,fontSize:15}}>{v}</div>
+              <div className="stat-label">{l}</div>
+            </div>
+          ))}
+        </div>
+
+        <button className="big-btn" style={{marginTop:4}} onClick={fetchPrices}>
+          <div className="big-btn-icon">🔄</div>
+          <div className="big-btn-body">
+            <div className="big-btn-title">{t.refresh}</div>
+            {lastUpd&&<div className="big-btn-sub">{lastUpd.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})}</div>}
+          </div>
+        </button>
+
+        {err&&<div style={{background:"var(--redBg)",border:"1px solid #ff525230",borderRadius:12,padding:14,fontSize:12,color:"var(--red)",marginTop:8}}>
+          ⚠ {t.err}: {err}
+        </div>}
+      </div>
+    )}
+
+    {/* ── ALPHA BOT ── */}
+    {tab==="alpha"&&(
+      <BotPage
+        port={aPort} totalPnl={tPnlA} t={t} lang={lang} orange={false}
+        title={t.botA_title} desc={t.botA_desc}
+        doExport={fmt=>doExport(aPort,"ALPHA",fmt)}
+      />
+    )}
+
+    {/* ── TURBO BOT ── */}
+    {tab==="turbo"&&(
+      <BotPage
+        port={tPort} totalPnl={tPnlT} t={t} lang={lang} orange={true}
+        title={t.botT_title} desc={t.botT_desc}
+        doExport={fmt=>doExport(tPort,"TURBO",fmt)}
+      />
+    )}
+
+    {/* ── SCANNER ── */}
+    {tab==="scanner"&&(
+      <div className="fade">
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <div className="sec" style={{margin:0,flex:1}}>LIVE PRICES</div>
+          <button className="lang-btn" onClick={fetchPrices}>{loading?"…":t.refresh}</button>
+        </div>
+        {lastUpd&&<div style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:10,padding:"10px 14px",marginBottom:14,fontSize:12,color:"var(--mid)",display:"flex",justifyContent:"space-between"}}>
+          <span>🕐 {lastUpd.toLocaleTimeString("en-US")}</span>
+          <span style={{color:"var(--green)"}}>● LIVE</span>
+        </div>}
+        <div style={{overflowX:"auto",borderRadius:var_r,border:"1px solid var(--border)"}}>
+          <table className="data-table" style={{minWidth:400,margin:0}}>
+            <thead>
+              <tr>
+                <th>TICKER</th>
+                <th>{lang==="ar"?"السعر":"PRICE"}</th>
+                <th>{lang==="ar"?"التغير":"CHANGE"}</th>
+                <th>{lang==="ar"?"عالي":"HIGH"}</th>
+                <th>{lang==="ar"?"منخفض":"LOW"}</th>
+                <th>VOL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ALL_TK.map(tk=>{
+                const p=prices[tk];
+                const chg=p?.price&&p?.prev?((p.price-p.prev)/p.prev*100):null;
+                return(
+                  <tr key={tk}>
+                    <td style={{fontFamily:"var(--en)",fontWeight:900,color:"var(--white)",fontSize:14}}>{tk}</td>
+                    <td style={{fontFamily:"var(--en)",fontWeight:900,fontSize:16,color:"var(--white)"}}>
+                      {p?.price?"$"+p.price.toFixed(2):"—"}
+                    </td>
+                    <td style={{color:clr(chg),fontWeight:700,fontSize:14}}>
+                      {chg!=null?fp(chg):"—"}
+                    </td>
+                    <td style={{color:"var(--mid)"}}>{p?.high?"$"+p.high.toFixed(2):"—"}</td>
+                    <td style={{color:"var(--mid)"}}>{p?.low?"$"+p.low.toFixed(2):"—"}</td>
+                    <td style={{color:"var(--dim)",fontSize:11}}>{p?.vol?(p.vol/1e6).toFixed(1)+"M":"—"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {/* ── REPORTS ── */}
+    {tab==="reports"&&(
+      <div className="fade">
+        <div className="robot-wrap" style={{padding:"10px 0 16px"}}>
+          <Robot size={80}/>
+        </div>
+
+        <div className="sec">ALPHA BOT</div>
+        {[[t.dlCSV,"📊","csv"],[t.dlJSON,"🗂","json"]].map(([lb,ic,fmt])=>(
+          <button key={fmt} className="report-row" onClick={()=>doExport(aPort,"ALPHA",fmt)}>
+            <span className="report-row-icon">{ic}</span>
+            <div className="report-row-body">
+              <div className="report-row-title">{t.alphaReport} — {fmt.toUpperCase()}</div>
+              <div className="report-row-sub">{fmt==="csv"?"Excel / Numbers":"Developer format"}</div>
+            </div>
+            <span className="report-row-arrow">⬇</span>
+          </button>
+        ))}
+
+        <div className="sep"/>
+        <div className="sec">TURBO BOT</div>
+        {[[t.dlCSV,"⚡","csv"],[t.dlJSON,"🗂","json"]].map(([lb,ic,fmt])=>(
+          <button key={fmt} className="report-row" onClick={()=>doExport(tPort,"TURBO",fmt)}>
+            <span className="report-row-icon">{ic}</span>
+            <div className="report-row-body">
+              <div className="report-row-title">{t.turboReport} — {fmt.toUpperCase()}</div>
+              <div className="report-row-sub">{fmt==="csv"?"Excel / Numbers":"Developer format"}</div>
+            </div>
+            <span className="report-row-arrow">⬇</span>
+          </button>
+        ))}
+
+        <div className="sep"/>
+        <div className="sec">{lang==="ar"?"الكل":"COMBINED"}</div>
+        <button className="report-row" onClick={()=>{
+          const all=[...aPort.map(p=>({...p,bot:"ALPHA"})),...tPort.map(p=>({...p,bot:"TURBO"}))];
+          exportCSV(all.map(p=>({Bot:p.bot,Ticker:p.ticker,Entry:p.entry,Stop:p.stop,T1:p.t1,T2:p.t2,Current:p.cur??"—",PnL:p.pnlUSD??"—",Pct:p.pnlPct??"—",Status:p.st,Alloc:p.amt})),`MAT_COMBINED_${new Date().toISOString().slice(0,10)}.csv`);
+        }}>
+          <span className="report-row-icon">📋</span>
+          <div className="report-row-body">
+            <div className="report-row-title">{t.fullReport}</div>
+            <div className="report-row-sub">{lang==="ar"?"المحفظتين في ملف واحد":"Both portfolios in one file"}</div>
+          </div>
+          <span className="report-row-arrow">⬇</span>
+        </button>
+
+        <div className="card" style={{marginTop:8}}>
+          <div className="sec">{t.summary}</div>
+          {[
+            [lang==="ar"?"محفظة ألفا":"Alpha Portfolio",PORT,tPnlA],
+            [lang==="ar"?"محفظة تيربو":"Turbo Portfolio",PORT,tPnlT],
+            [lang==="ar"?"الإجمالي":"Total",PORT*2,tPnlA+tPnlT],
+          ].map(([lb,cap,pnl])=>(
+            <div key={lb} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:"1px solid var(--border)"}}>
+              <span style={{fontSize:14,fontWeight:600}}>{lb}</span>
+              <div style={{textAlign:"left"}}>
+                <span style={{fontFamily:"var(--en)",fontSize:16,fontWeight:900,color:clr(pnl)}}>
+                  {pnl>=0?"+":""}${Math.abs(pnl).toFixed(2)}
+                </span>
+                <span style={{fontSize:12,color:"var(--mid)",marginRight:8}}> ({fp(pnl/cap*100)})</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+  </div>
+
+  {/* BOTTOM NAV */}
+  <div className="bnav">
+    {NAV.map(({k,icon,lb})=>(
+      <button key={k} className={`nav-item${tab===k?" on":""}`} onClick={()=>setTab(k)}>
+        <div className="nav-icon">{icon}</div>
+        <div className="nav-label">{lb}</div>
+      </button>
+    ))}
+  </div>
+
+  <div style={{height:"env(safe-area-inset-bottom,0px)"}}/>
+</div>
+```
+
+);
+}
+
+// Fix var_r reference
+const var_r = “12px”;
+
+ReactDOM.createRoot(document.getElementById(“root”)).render(<App/>);
+</script>
+
+</body>
+</html>
